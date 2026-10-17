@@ -1,4 +1,6 @@
-<html lang="ar" dir="rtl"><head>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#101827">
@@ -15,6 +17,7 @@
 body{
   margin:0;background:var(--bg);color:var(--text);
   font-family:Tahoma,Arial,sans-serif;font-size:14px;
+  padding-bottom:90px;
 }
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
@@ -25,17 +28,22 @@ header{
 }
 .brand{display:flex;align-items:center;gap:12px}
 .logo{
-  width:48px;height:48px;border-radius:15px;
+  width:52px;height:52px;border-radius:15px;
   background:linear-gradient(135deg,#f0c674,#a87832);
-  color:#111827;display:grid;place-items:center;
-  font-size:23px;font-weight:bold
+  display:grid;place-items:center;overflow:hidden;
+  box-shadow:0 4px 14px rgba(240,198,116,.25)
+}
+.logo img{
+  width:100%;height:100%;object-fit:cover;display:block
 }
 h1{font-size:21px;margin:0 0 6px}
 .subtitle{color:var(--muted);font-size:12px}
 .tag{
   border:1px solid #355043;background:#112b27;
-  color:var(--green);padding:9px 12px;border-radius:20px
+  color:var(--green);padding:9px 12px;border-radius:20px;
+  display:inline-flex;align-items:center;gap:6px
 }
+.tag .dz{font-weight:900;color:var(--gold)}
 .hero{
   padding:23px;border:1px solid var(--line);border-radius:22px;
   background:linear-gradient(120deg,#1b2b42,#131c2c);
@@ -53,6 +61,7 @@ h1{font-size:21px;margin:0 0 6px}
 }
 .stat .label{color:var(--muted);font-size:12px;margin-bottom:12px}
 .stat .amount{font-size:clamp(17px,2.4vw,25px);font-weight:bold;overflow-wrap:anywhere}
+.stat .amount .cur{font-size:.62em;color:var(--muted);font-weight:700;margin-right:3px}
 .green{color:var(--green)}.red{color:var(--red)}
 .gold{color:var(--gold)}.blue{color:var(--blue)}
 .layout{
@@ -138,14 +147,79 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
   font-size:20px;line-height:1;padding:4px 8px;cursor:pointer
 }
 
-/* Brand long-press hint */
+/* ===== FIXED CIRCULAR BASKET BUTTON ===== */
+#basketFab{
+  position:fixed;
+  bottom:22px;
+  left:22px;
+  width:62px;height:62px;border-radius:50%;
+  background:linear-gradient(135deg,#f0c674,#a87832);
+  color:#171717;border:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 10px 26px rgba(240,198,116,.4), 0 4px 10px rgba(0,0,0,.35);
+  cursor:pointer;z-index:990;
+  transition:transform .2s ease, box-shadow .2s ease
+}
+#basketFab:hover{transform:translateY(-3px) scale(1.05);box-shadow:0 14px 32px rgba(240,198,116,.5), 0 6px 14px rgba(0,0,0,.4)}
+#basketFab:active{transform:scale(.95)}
+#basketFab svg{width:28px;height:28px}
+#basketFab .badge-dot{
+  position:absolute;top:-2px;right:-2px;
+  min-width:22px;height:22px;border-radius:50%;
+  background:var(--red);color:#fff;font-size:11px;font-weight:bold;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 5px;border:2px solid var(--bg);
+  transform:scale(0);transition:transform .2s
+}
+#basketFab .badge-dot.show{transform:scale(1)}
+
+/* Basket drawer */
+#basketDrawer{
+  position:fixed;inset:0;background:rgba(5,9,17,.8);
+  z-index:995;opacity:0;pointer-events:none;transition:opacity .25s
+}
+#basketDrawer.show{opacity:1;pointer-events:auto}
+.basket-panel{
+  position:absolute;bottom:0;left:0;right:0;
+  background:var(--panel);border-top-left-radius:22px;border-top-right-radius:22px;
+  border:1px solid var(--line);border-bottom:0;
+  max-height:80vh;display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .3s ease
+}
+#basketDrawer.show .basket-panel{transform:translateY(0)}
+.basket-head{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 20px;border-bottom:1px solid var(--line)
+}
+.basket-head h3{margin:0;font-size:17px}
+.basket-head .close-x{
+  background:transparent;border:0;color:var(--muted);
+  font-size:24px;line-height:1;padding:4px 10px;cursor:pointer
+}
+.basket-body{
+  padding:16px 20px 24px;overflow-y:auto;flex:1
+}
+.basket-item{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px;border:1px solid var(--line);border-radius:12px;
+  background:#101a2b;margin-bottom:10px
+}
+.basket-item .bi-name{font-weight:bold;font-size:14px;overflow-wrap:anywhere}
+.basket-item .bi-meta{color:var(--muted);font-size:11px;margin-top:4px}
+.basket-item .bi-amt{font-weight:bold;white-space:nowrap}
+.basket-summary{
+  background:var(--panel2);border-radius:12px;padding:14px;
+  margin-top:8px;font-size:13px;line-height:2
+}
+.basket-summary .row{display:flex;justify-content:space-between}
+.basket-summary .row b{color:var(--gold)}
+.basket-empty{text-align:center;color:var(--muted);padding:30px 10px;line-height:2}
+
+/* Brand long-press */
 .brand{
-  cursor:default;
-  user-select:none;
-  -webkit-user-select:none;
-  -webkit-touch-callout:none;
-  -webkit-tap-highlight-color:transparent;
-  transition:transform .15s;
+  cursor:default;user-select:none;-webkit-user-select:none;
+  -webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+  transition:transform .15s
 }
 .brand.pressing{transform:scale(.97)}
 .brand.pressing .logo{animation:pulseGold 1s ease-in-out infinite}
@@ -175,19 +249,18 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
   display:flex;align-items:center;gap:10px;margin-bottom:18px;
   padding-bottom:16px;border-bottom:1px solid var(--line)
 }
-.login-card .brand-mark .logo{width:40px;height:40px;font-size:20px;border-radius:12px}
+.login-card .brand-mark .logo{width:40px;height:40px;border-radius:12px}
 .login-card .brand-mark b{font-size:16px}
 
-.google-btn{
-  display:flex;align-items:center;justify-content:center;gap:12px;
+.phone-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
   width:100%;padding:13px;border-radius:12px;
-  background:#fff;color:#1f1f1f;border:0;
+  background:var(--gold);color:#171717;border:0;
   font-weight:bold;font-size:14px;cursor:pointer;
-  transition:.15s
+  transition:.15s;margin-top:6px
 }
-.google-btn:hover{background:#f2f2f2}
-.google-btn:active{transform:scale(.98)}
-.google-btn svg{width:20px;height:20px;flex-shrink:0}
+.phone-btn:hover{background:#e6b85a}
+.phone-btn:active{transform:scale(.98)}
 
 .login-close{
   background:transparent;border:0;color:var(--muted);
@@ -207,7 +280,7 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Account status chip */
+/* Account chip */
 #accountChip{
   display:none;align-items:center;gap:8px;
   background:#112b27;border:1px solid #355043;
@@ -222,6 +295,12 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
   color:#171717;font-weight:bold
 }
 
+/* User info in login form */
+.phone-hint{
+  font-size:11px;color:var(--muted);margin-top:8px;line-height:1.6;
+  text-align:center
+}
+
 @media(max-width:800px){
  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
  .layout{grid-template-columns:1fr}
@@ -229,27 +308,27 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
  .hero{padding:18px}
  #pdfToast{left:12px;right:12px;transform:translateX(0) translateY(120%)}
  #pdfToast.show{transform:translateX(0) translateY(0)}
+ #basketFab{bottom:16px;left:16px;width:56px;height:56px}
+ #basketFab svg{width:25px;height:25px}
 }
 @media(max-width:380px){.two{grid-template-columns:1fr}}
 </style>
 
-<link rel="manifest" href="./manifest.json">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#4b6cb7">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon.png">
-</head>
+<link rel="apple-touch-icon" href="icon.png"></head>
 
 <body>
 <div class="container">
 
 <header>
   <div class="brand" id="brand">
-    <div class="logo">₣</div>
+    <div class="logo" aria-label="خلصني">
+      <img src="https://i.ibb.co/0jLK3Wn4/1792254143547.jpg" alt="خلصني">
+    </div>
     <div>
       <h1>خلصني</h1>
-      <div class="subtitle">Khallassni — Gestion de crédit et de dettes</div>
+      <div class="subtitle">Khallassni — Gestion de crédit en Dinar Algérien</div>
     </div>
   </div>
   <div style="display:flex;gap:9px;align-items:center;flex-wrap:wrap">
@@ -257,27 +336,27 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
       <span class="avatar" id="accountAvatar">؟</span>
       <span id="accountName">حسابي</span>
     </button>
-    <span class="tag">● تسيير شخصي</span>
+    <span class="tag">● كلشي بالدينار <span class="dz">(دج)</span></span>
   </div>
 </header>
 
 <section class="hero">
-  <h2>سيطر على دراهمك 💰</h2>
-  <p>سجّل شكون يسالك، شكون تسالو، المبالغ المدفوعة والباقية، وتواريخ تسديد الديون. كل شيء منظم في مكان واحد.</p>
+  <h2>سيطر على دراهمك بالدينار الجزائري 💰</h2>
+  <p>سجّل شكون يسالك، شكون تسالو، المبالغ المدفوعة والباقية، وتواريخ تسديد الديون — كلشي بالدينار الجزائري (دج). كل شيء منظم في مكان واحد.</p>
 </section>
 
 <section class="stats">
   <div class="stat">
     <div class="label">💸 مجموع الديون اللي عليّ</div>
-    <div class="amount red" id="totalOwe">0 دج</div>
+    <div class="amount red" id="totalOwe">0 <span class="cur">دج</span></div>
   </div>
   <div class="stat">
     <div class="label">🤝 مجموع الديون اللي يسالوها ليّ</div>
-    <div class="amount green" id="totalGet">0 دج</div>
+    <div class="amount green" id="totalGet">0 <span class="cur">دج</span></div>
   </div>
   <div class="stat">
     <div class="label">📤 المبلغ اللي خلّصتو</div>
-    <div class="amount gold" id="totalPaid">0 دج</div>
+    <div class="amount gold" id="totalPaid">0 <span class="cur">دج</span></div>
   </div>
   <div class="stat">
     <div class="label">⏰ الديون المتأخرة</div>
@@ -293,12 +372,13 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
     <form id="debtForm">
       <div class="field">
         <label for="person">اسم الشخص أو المحل *</label>
-        <input id="person" required="" maxlength="100" placeholder="مثال: محمد، محل المواد الغذائية">
+        <input id="person" required maxlength="100"
+          placeholder="مثال: محمد، محل المواد الغذائية">
       </div>
 
       <div class="field">
         <label for="type">نوع الدين *</label>
-        <select id="type" required="">
+        <select id="type" required>
           <option value="owe">يسالني</option>
           <option value="get">نسالو</option>
         </select>
@@ -307,38 +387,45 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
       <div class="two">
         <div class="field">
           <label for="amount">المبلغ الإجمالي (دج) *</label>
-          <input id="amount" type="number" min="1" step="0.01" required="" placeholder="10000">
+          <input id="amount" type="number" min="1" step="0.01"
+            required placeholder="10000">
         </div>
         <div class="field">
           <label for="paid">المبلغ المدفوع (دج)</label>
-          <input id="paid" type="number" min="0" step="0.01" value="0" required="">
+          <input id="paid" type="number" min="0" step="0.01"
+            value="0" required>
         </div>
       </div>
 
       <div class="field">
         <label for="date">تاريخ الدين</label>
-        <input id="date" type="text" maxlength="30" placeholder="مثال: 15/03/2025 أو 15 مارس">
+        <input id="date" type="text" maxlength="30"
+          placeholder="مثال: 15/03/2025 أو 15 مارس">
       </div>
 
       <div class="field">
         <label for="due">آخر أجل للتسديد أو القبض</label>
-        <input id="due" type="text" maxlength="30" placeholder="مثال: آخر الشهر، 30/04/2025">
+        <input id="due" type="text" maxlength="30"
+          placeholder="مثال: آخر الشهر، 30/04/2025">
       </div>
 
       <div class="field">
         <label for="phone">رقم الهاتف (اختياري)</label>
-        <input id="phone" type="tel" maxlength="30" placeholder="05 أو 06 أو 07...">
+        <input id="phone" type="tel" maxlength="30"
+          placeholder="05 أو 06 أو 07...">
       </div>
 
       <div class="field">
         <label for="notes">ملاحظات أو تفاصيل الاتفاق</label>
-        <textarea id="notes" maxlength="1000" placeholder="مثال: السلعة، تاريخ الاتفاق، الأقساط..."></textarea>
+        <textarea id="notes" maxlength="1000"
+          placeholder="مثال: السلعة، تاريخ الاتفاق، الأقساط..."></textarea>
       </div>
 
       <button class="btn primary full" type="submit" id="saveBtn">
         حفظ الدين
       </button>
-      <button class="btn secondary full hidden" type="button" id="cancelEdit" style="margin-top:8px">إلغاء التعديل</button>
+      <button class="btn secondary full hidden" type="button"
+        id="cancelEdit" style="margin-top:8px">إلغاء التعديل</button>
     </form>
   </section>
 
@@ -355,7 +442,8 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
     </div>
 
     <div class="toolbar">
-      <input type="search" id="search" placeholder="🔍 ابحث باسم الشخص أو الملاحظات...">
+      <input type="search" id="search"
+        placeholder="🔍 ابحث باسم الشخص أو الملاحظات...">
       <select id="sort">
         <option value="new">الأحدث أولاً</option>
         <option value="old">الأقدم أولاً</option>
@@ -371,19 +459,42 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
 </div>
 
 <div class="footer">
-  خلصني — Khallassni | نسخة شخصية لإدارة الحسابات. هذا التطبيق لا يرسل تنبيهات
+  خلصني — Khallassni | كل المبالغ بالدينار الجزائري (دج). هذا التطبيق لا يرسل تنبيهات
   خارج المتصفح ولا يتصل بالبنك. احتفظ بنسخة احتياطية دورياً.
 </div>
 </div>
 
-<!-- PDF download toast -->
+<!-- Fixed circular basket button -->
+<button id="basketFab" type="button" title="سلة الديون غير المسددة" aria-label="سلة الديون">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+    stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="21" r="1"/>
+    <circle cx="20" cy="21" r="1"/>
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+  </svg>
+  <span class="badge-dot" id="basketBadge">0</span>
+</button>
+
+<!-- Basket drawer -->
+<div id="basketDrawer">
+  <div class="basket-panel">
+    <div class="basket-head">
+      <h3>🛒 سلة الديون غير المسددة</h3>
+      <button class="close-x" id="basketClose" type="button">×</button>
+    </div>
+    <div class="basket-body" id="basketBody"></div>
+  </div>
+</div>
+
+<!-- PDF toast -->
 <div id="pdfToast">
   <button class="pdf-icon-btn" id="pdfBtn" type="button" title="تحميل PDF">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-      <polyline points="14 2 14 8 20 8"></polyline>
-      <line x1="12" y1="18" x2="12" y2="12"></line>
-      <polyline points="9 15 12 18 15 15"></polyline>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="12" y1="18" x2="12" y2="12"/>
+      <polyline points="9 15 12 18 15 15"/>
     </svg>
     تحميل PDF
   </button>
@@ -391,31 +502,40 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
   <button class="pdf-toast-close" id="pdfClose" type="button" title="إغلاق">×</button>
 </div>
 
-<!-- Google Login Modal -->
+<!-- Phone Login Modal -->
 <div id="loginModal">
   <div class="login-card">
     <div class="brand-mark">
-      <div class="logo">₣</div>
+      <div class="logo"><img src="https://i.ibb.co/0jLK3Wn4/1792254143547.jpg" alt="خلصني"></div>
       <b>خلصني</b>
     </div>
-    <h2>تسجيل الدخول</h2>
-    <p>سجّل دخول بحسابك على Google باش تبقى بياناتك الخاصة ومربوطة بحسابك.</p>
+    <h2>تسجيل الدخول برقم الهاتف</h2>
+    <p>دخّل رقم هاتفك، كل رقم عندو بياناتو الخاصة. لما تدخل برقمك تلقى بياناتك قاع محفوظة.</p>
 
     <div id="loginBody">
-      <button class="google-btn" id="googleBtn" type="button">
-        <svg viewBox="0 0 48 48">
-          <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"></path>
-          <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"></path>
-          <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"></path>
-          <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"></path>
-        </svg>
-        متابعة بحساب Google
+      <div class="field">
+        <label for="loginPhone">رقم الهاتف *</label>
+        <input id="loginPhone" type="tel" maxlength="20"
+          placeholder="05xxxxxxxx أو 06xxxxxxxx أو 07xxxxxxxx"
+          style="text-align:center;font-size:16px;letter-spacing:1px">
+      </div>
+      <div class="field">
+        <label for="loginName">اسمك (اختياري - يظهر في الحساب)</label>
+        <input id="loginName" type="text" maxlength="40"
+          placeholder="مثال: أحمد">
+      </div>
+      <button class="phone-btn" id="phoneLoginBtn" type="button">
+        🔓 دخول برقم الهاتف
       </button>
+      <div class="phone-hint">
+        البيانات مربوطة برقم الهاتف. كل رقم عندو سجلاتو الخاصة،<br>
+        حافظ على رقمك باش ترجع تلقى بياناتك.
+      </div>
     </div>
 
     <div id="loginLoading" class="login-loading hidden">
       <div class="spinner"></div>
-      <span>جاري الاتصال بـ Google...</span>
+      <span>جاري فتح الحساب...</span>
     </div>
 
     <button class="login-close" id="loginClose" type="button">إغلاق</button>
@@ -425,8 +545,9 @@ hr{border:0;border-top:1px solid var(--line);margin:17px 0}
 <script>
 "use strict";
 
-const KEY = "khallassni_manager_v1";
-const USER_KEY = "khallassni_user_v1";
+/* Per-phone storage: key = "khallassni_data_<phone>" */
+const BASE_KEY = "khallassni_data_v2_";
+const USER_KEY = "khallassni_current_user_v2";
 let debts = [];
 let activeFilter = "all";
 let editingId = null;
@@ -435,13 +556,24 @@ let currentUser = null;
 
 const $ = id => document.getElementById(id);
 
-/* ---------- USER (Google login simulation) ---------- */
+/* Normalize phone: strip non-digits */
+function normPhone(p) {
+  return String(p || "").replace(/\D/g, "");
+}
+
+/* Storage key for current user's data */
+function dataKey() {
+  if (!currentUser) return BASE_KEY + "guest";
+  return BASE_KEY + normPhone(currentUser.phone);
+}
+
+/* ---------- USER ---------- */
 function loadUser() {
   try {
     const raw = localStorage.getItem(USER_KEY);
     if (!raw) return null;
     const u = JSON.parse(raw);
-    if (!u || typeof u.name !== "string") return null;
+    if (!u || !u.phone) return null;
     return u;
   } catch { return null; }
 }
@@ -455,9 +587,11 @@ function renderAccount() {
   const chip = $("accountChip");
   if (currentUser) {
     chip.classList.add("show");
-    const initials = currentUser.name.trim().charAt(0).toUpperCase() || "؟";
+    const display = (currentUser.name || "").trim() ||
+      currentUser.phone.slice(-4);
+    const initials = display.charAt(0).toUpperCase() || "؟";
     $("accountAvatar").textContent = initials;
-    $("accountName").textContent = currentUser.name.split(" ")[0];
+    $("accountName").textContent = display;
   } else {
     chip.classList.remove("show");
   }
@@ -466,32 +600,29 @@ function renderAccount() {
 $("accountChip").addEventListener("click", () => {
   if (!currentUser) return;
   const action = confirm(
-    "حسابك: " + currentUser.name +
-    "\nالبريد: " + (currentUser.email || "—") +
+    "حسابك: " + (currentUser.name || "بدون اسم") +
+    "\nالهاتف: " + currentUser.phone +
     "\n\nاضغط OK للخروج من الحساب."
   );
   if (action) {
     currentUser = null;
     localStorage.removeItem(USER_KEY);
     renderAccount();
-    alert("تم الخروج من الحساب.");
+    debts = [];
+    render();
+    updateBasketBadge();
+    alert("تم الخروج. بياناتك تبقى محفوظة تحت رقم هاتفك.");
   }
 });
 
-/* ---------- Long press on brand (3 seconds) ---------- */
+/* ---------- Long press (3s) on brand ---------- */
 const brand = $("brand");
 let pressTimer = null;
-let pressStart = 0;
 const LONG_PRESS_MS = 3000;
 
 function startPress(e) {
-  // Ignore right-click / secondary
   if (e.type === "mousedown" && e.button !== 0) return;
-  if (currentUser) {
-    // Already logged in — show hint silently
-    return;
-  }
-  pressStart = Date.now();
+  if (currentUser) return;
   brand.classList.add("pressing");
   clearTimeout(pressTimer);
   pressTimer = setTimeout(() => {
@@ -499,74 +630,72 @@ function startPress(e) {
     openLogin();
   }, LONG_PRESS_MS);
 }
-
 function cancelPress() {
   clearTimeout(pressTimer);
   brand.classList.remove("pressing");
 }
-
 brand.addEventListener("mousedown", startPress);
 brand.addEventListener("touchstart", startPress, {passive:true});
 brand.addEventListener("mouseup", cancelPress);
 brand.addEventListener("mouseleave", cancelPress);
 brand.addEventListener("touchend", cancelPress);
 brand.addEventListener("touchcancel", cancelPress);
-
-// Prevent long-press context menu on mobile
 brand.addEventListener("contextmenu", e => e.preventDefault());
 
-/* ---------- Login modal ---------- */
+/* ---------- Phone Login ---------- */
 function openLogin() {
   if (currentUser) return;
   $("loginModal").classList.add("show");
   $("loginBody").classList.remove("hidden");
   $("loginLoading").classList.add("hidden");
+  $("loginPhone").value = "";
+  $("loginName").value = "";
 }
-
 function closeLogin() {
   $("loginModal").classList.remove("show");
 }
-
 $("loginClose").addEventListener("click", closeLogin);
 $("loginModal").addEventListener("click", e => {
   if (e.target === $("loginModal")) closeLogin();
 });
 
-$("googleBtn").addEventListener("click", () => {
+$("phoneLoginBtn").addEventListener("click", () => {
+  const rawPhone = $("loginPhone").value.trim();
+  const phone = normPhone(rawPhone);
+  if (phone.length < 8) {
+    alert("أدخل رقم هاتف صحيح (8 أرقام على الأقل).");
+    return;
+  }
+  const name = $("loginName").value.trim();
+
   $("loginBody").classList.add("hidden");
   $("loginLoading").classList.remove("hidden");
 
-  // Simulate Google OAuth flow (no backend). In production replace this
-  // with real Google Identity Services + backend verification.
   setTimeout(() => {
-    const name = prompt(
-      "محاكاة تسجيل الدخول بجوجل\n\nاكتب اسمك (سيظهر في الحساب):",
-      "مستخدم"
-    );
-    if (!name || !name.trim()) {
-      $("loginLoading").classList.add("hidden");
-      $("loginBody").classList.remove("hidden");
-      return;
-    }
-    const email = (prompt("اكتب بريدك الإلكتروني (اختياري):", "") || "").trim();
-
     currentUser = {
-      name: name.trim(),
-      email: email,
-      provider: "google",
+      phone: phone,
+      name: name || "",
       signedInAt: new Date().toISOString()
     };
     saveUser(currentUser);
+
+    // Load that phone's data
+    debts = loadData();
+    render();
+    updateBasketBadge();
     renderAccount();
+
+    $("loginLoading").classList.add("hidden");
+    $("loginBody").classList.remove("hidden");
     closeLogin();
-    alert("مرحباً " + currentUser.name + "!\nتم تسجيل الدخول بنجاح.");
-  }, 1200);
+    alert("مرحباً!\nتم الدخول برقم " + phone + "\nعدد سجلاتك: " + debts.length);
+  }, 700);
 });
 
 /* ---------- Data ---------- */
 function loadData() {
   try {
-    const raw = localStorage.getItem(KEY);
+    const raw = localStorage.getItem(dataKey());
     if (!raw) return [];
     const data = JSON.parse(raw);
     if (!Array.isArray(data)) throw new Error("Invalid data");
@@ -585,12 +714,11 @@ function loadData() {
     return [];
   }
 }
-
-debts = loadData();
+if (currentUser) debts = loadData();
 
 function saveData() {
   try {
-    localStorage.setItem(KEY, JSON.stringify(debts));
+    localStorage.setItem(dataKey(), JSON.stringify(debts));
     return true;
   } catch (e) {
     alert("تعذر حفظ البيانات.");
@@ -603,13 +731,15 @@ function money(n) {
     maximumFractionDigits: 2
   }) + " دج";
 }
-
+function num(n) {
+  return Number(n || 0).toLocaleString("fr-DZ", {
+    maximumFractionDigits: 2
+  });
+}
 function remaining(d) {
   return Math.max(0, Number(d.amount) - Number(d.paid));
 }
-
 function isDone(d) { return remaining(d) <= 0; }
-
 function isLate(d) {
   if (!d.due || isDone(d)) return false;
   const iso = /^(\d{4})-(\d{2})-(\d{2})$/;
@@ -618,14 +748,12 @@ function isLate(d) {
   }
   return false;
 }
-
 function safe(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({
     "&":"&amp;", "<":"&lt;", ">":"&gt;",
     '"':"&quot;", "'":"&#39;"
   }[c]));
 }
-
 function dateText(date) {
   if (!date) return "غير محدد";
   return String(date);
@@ -635,14 +763,10 @@ function renderStats() {
   const owe = debts.filter(d => d.type === "owe");
   const get = debts.filter(d => d.type === "get");
 
-  $("totalOwe").textContent =
-    money(owe.reduce((s,d) => s + remaining(d), 0));
-  $("totalGet").textContent =
-    money(get.reduce((s,d) => s + remaining(d), 0));
-  $("totalPaid").textContent =
-    money(debts.reduce((s,d) => s + Number(d.paid), 0));
-  $("overdueCount").textContent =
-    debts.filter(isLate).length.toLocaleString("fr-DZ");
+  $("totalOwe").innerHTML = num(owe.reduce((s,d) => s + remaining(d), 0)) + ' <span class="cur">دج</span>';
+  $("totalGet").innerHTML = num(get.reduce((s,d) => s + remaining(d), 0)) + ' <span class="cur">دج</span>';
+  $("totalPaid").innerHTML = num(debts.reduce((s,d) => s + Number(d.paid), 0)) + ' <span class="cur">دج</span>';
+  $("overdueCount").textContent = debts.filter(isLate).length.toLocaleString("fr-DZ");
 }
 
 function renderList() {
@@ -782,6 +906,7 @@ $("debtForm").addEventListener("submit", e => {
   lastSavedId = record.id;
   resetForm();
   render();
+  updateBasketBadge();
   showPdfToast();
 });
 
@@ -830,6 +955,7 @@ $("list").addEventListener("click", e => {
     }
     lastSavedId = d.id;
     render();
+    updateBasketBadge();
     showPdfToast();
     return;
   }
@@ -881,7 +1007,66 @@ $("list").addEventListener("click", e => {
     }
     if (editingId === d.id) resetForm();
     render();
+    updateBasketBadge();
   }
+});
+
+/* ---------- BASKET (unpaid debts) ---------- */
+function updateBasketBadge() {
+  const unpaid = debts.filter(d => !isDone(d));
+  const badge = $("basketBadge");
+  if (unpaid.length > 0) {
+    badge.textContent = unpaid.length;
+    badge.classList.add("show");
+  } else {
+    badge.classList.remove("show");
+  }
+}
+
+function renderBasket() {
+  const unpaid = debts.filter(d => !isDone(d));
+  const body = $("basketBody");
+
+  if (!unpaid.length) {
+    body.innerHTML = '<div class="basket-empty">🛒<br>السلة فارغة.<br>كل الديون مسددة! 🎉</div>';
+    return;
+  }
+
+  const oweTotal = unpaid.filter(d => d.type === "owe")
+    .reduce((s,d) => s + remaining(d), 0);
+  const getTotal = unpaid.filter(d => d.type === "get")
+    .reduce((s,d) => s + remaining(d), 0);
+
+  body.innerHTML = unpaid.map(d => {
+    const left = remaining(d);
+    const typeLabel = d.type === "owe" ? "يسالني" : "نسالو";
+    return `
+      <div class="basket-item">
+        <div style="min-width:0">
+          <div class="bi-name">${safe(d.person)}</div>
+          <div class="bi-meta">${typeLabel}${d.due ? " — آخر أجل: " + safe(d.due) : ""}</div>
+        </div>
+        <div class="bi-amt gold">${money(left)}</div>
+      </div>`;
+  }).join("") + `
+      <div class="basket-summary">
+        <div class="row"><span>💸 مجموع اللي عليّ:</span><b class="red">${money(oweTotal)}</b></div>
+        <div class="row"><span>🤝 مجموع اللي ليّ:</span><b class="green">${money(getTotal)}</b></div>
+        <div class="row" style="border-top:1px solid var(--line);padding-top:8px;margin-top:4px">
+          <span>📦 عدد الديون:</span><b>${unpaid.length}</b>
+        </div>
+      </div>`;
+}
+
+$("basketFab").addEventListener("click", () => {
+  renderBasket();
+  $("basketDrawer").classList.add("show");
+});
+$("basketClose").addEventListener("click", () => {
+  $("basketDrawer").classList.remove("show");
+});
+$("basketDrawer").addEventListener("click", e => {
+  if (e.target === $("basketDrawer")) $("basketDrawer").classList.remove("show");
 });
 
 /* ---------- PDF ---------- */
@@ -904,7 +1089,8 @@ function generatePDF(d) {
 <style>
   body{font-family:Tahoma,Arial,sans-serif;background:#fff;color:#111;margin:0;padding:28px}
   .receipt{max-width:640px;margin:auto;border:2px solid #a87832;border-radius:16px;overflow:hidden}
-  .head{background:linear-gradient(135deg,#f0c674,#a87832);padding:18px 22px;color:#171717}
+  .head{background:linear-gradient(135deg,#f0c674,#a87832);padding:18px 22px;color:#171717;display:flex;align-items:center;gap:14px}
+  .head img{width:54px;height:54px;border-radius:12px;object-fit:cover}
   .head h1{margin:0;font-size:22px}
   .head p{margin:4px 0 0;font-size:12px}
   .body{padding:22px}
@@ -923,8 +1109,11 @@ function generatePDF(d) {
 <body>
   <div class="receipt">
     <div class="head">
-      <h1>خلصني — Khallassni</h1>
-      <p>إيصال دين / Reçu de crédit</p>
+      <img src="https://i.ibb.co/0jLK3Wn4/1792254143547.jpg" alt="خلصني">
+      <div>
+        <h1>خلصني — Khallassni</h1>
+        <p>إيصال دين / Reçu de crédit — بالدينار الجزائري (دج)</p>
+      </div>
     </div>
     <div class="body">
       <div class="row"><span class="k">الاسم</span><span class="v">${safe(d.person)}</span></div>
@@ -940,11 +1129,11 @@ function generatePDF(d) {
         <span>المبلغ المتبقي</span>
         <span class="due-amount">${money(left)}</span>
       </div>
-      ${currentUser ? `<div class="who">صاحب الحساب: ${safe(currentUser.name)}${currentUser.email ? " — " + safe(currentUser.email) : ""}</div>` : ""}
+      ${currentUser ? `<div class="who">صاحب الحساب: ${safe(currentUser.name || "—")} — ${safe(currentUser.phone)}</div>` : ""}
     </div>
     <div class="footer">
       تم الإنشاء بتاريخ: ${safe(now)} — تطبيق خلصني<br>
-      هذا الإيصال للاستخدام الشخصي فقط.
+      هذا الإيصال للاستخدام الشخصي فقط. كل المبالغ بالدينار الجزائري.
     </div>
   </div>
   <script>
@@ -952,6 +1141,8 @@ function generatePDF(d) {
       setTimeout(function(){ window.print(); }, 300);
     };
   <\/script>
+
+<script>if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));}</script>
 </body>
 </html>`;
 
@@ -984,16 +1175,7 @@ $("pdfBtn").addEventListener("click", () => {
 /* ---------- Init ---------- */
 renderAccount();
 render();
+updateBasketBadge();
 </script>
-
-
-<script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js')
-        .then(reg => console.log('Service Worker enregistré !'))
-        .catch(err => console.error('Erreur SW :', err));
-    });
-  }
-</script>
-</body></html>
+</body>
+</html>
